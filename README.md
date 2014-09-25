@@ -1,7 +1,6 @@
 hipchat.zsh
-========
 
-A zsh plugin to send messages over Hipchat to your friends. You should have `curl`
+A zsh plugin to send messages over Hipchat to your friends through shell. You should have `curl`
 installed set the environment variable `HIPCHAT_API_TOKEN`.
 Then you can send quick pings from the command line!
 
@@ -35,3 +34,4 @@ Usage
 Usage: hipchat [-d] <email or room> <message>
 -d: debug (more verbose output)
 ```
+
