@@ -29,6 +29,12 @@ echo "plugins+=(hipchat)" >> ~/.zshrc
 
 (Alternatively, you can place the `hipchat` plugin in the `plugins=(...)` local in your `~/.zshrc` manually.)
 
+If you use the non-recommended alternative, bash, you can install this directly to your `~/.bash_profile`:
+
+```bash
+curl -s https://raw.githubusercontent.com/robertzk/hipchat.zsh/master/hipchat.plugin.zsh >> ~/.bash_profile
+```
+
 Usage
 ------
 
