@@ -19,12 +19,12 @@ hipchat() { # Arg 1: Username to send, rest: message to send
   # Ensure curl is present
   command -v curl >/dev/null 2>&1 || { echo "Please install curl." >&2; exit 1; }
 
-  DEBUG=false
+  local DEBUG=false
   while getopts "d:" OPTION
   do
     case $OPTION in
       d)
-        DEBUG=true
+        local DEBUG=true
         shift 1
         ;;
     esac
@@ -38,15 +38,15 @@ hipchat() { # Arg 1: Username to send, rest: message to send
   fi
 
   if [[ $1 =~ '@' ]]; then 
-    hipchat_module='user'
-    hipchat_path='message'
+    local hipchat_module='user'
+    local hipchat_path='message'
   else
-    hipchat_module='room'
-    hipchat_path='notification'
+    local hipchat_module='room'
+    local hipchat_path='notification'
   fi
 
-  url="http://api.hipchat.com/v2/$hipchat_module/$1/$hipchat_path?auth_token=$HIPCHAT_API_TOKEN" 
-  message="{\"message\": \"${@:2}\", \"message_format\": \"text\" }"
+  local url="http://api.hipchat.com/v2/$hipchat_module/$1/$hipchat_path?auth_token=$HIPCHAT_API_TOKEN" 
+  local message="{\"message\": \"${@:2}\", \"message_format\": \"text\" }"
   
   if $DEBUG; then
     echo "URL=$url"
