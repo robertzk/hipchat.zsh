@@ -57,8 +57,7 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     local hipchat_path='message'
 
     local url="http://api.hipchat.com/v2/$hipchat_module/$1/$hipchat_path?auth_token=$HIPCHAT_API_TOKEN" 
-    shift 1
-    local message="{\"message\": \"$@\", \"message_format\": \"text\" }"
+    local message="{\"message\": \"${@:2}\", \"message_format\": \"text\" }"
     
     if $DEBUG; then
       echo "URL=$url"
@@ -76,8 +75,7 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     fi
 
     local url="http://api.hipchat.com/v1/rooms/message?format=json&auth_token=$token&message_format=text"
-    shift 1
-    local message="message=`urlencode "$@"`&room_id=`urlencode "$1"`&from=`urlencode "$from"`"
+    local message="message=`urlencode "${@:2}"`&room_id=`urlencode "$1"`&from=`urlencode "$from"`"
     if $DEBUG; then
       echo "URL=$url"
       echo "MESSAGE=$message"
