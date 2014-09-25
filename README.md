@@ -22,8 +22,8 @@ Assuming you have [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh), you ca
 simply write
 
 ```bash
-git clone git@github.com:robertzk/sudo.zsh.git ~/.oh-my-zsh/custom/plugins/sudo
-echo "plugins+=(sudo)" >> ~/.zshrc
+git clone git@github.com:robertzk/hipchat.zsh.git ~/.oh-my-zsh/custom/plugins/hipchat
+echo "plugins+=(hipchat)" >> ~/.zshrc
 ```
 
 (Alternatively, you can place the `sudo` plugin in the `plugins=(...)` local in your `~/.zshrc` manually.)
@@ -32,6 +32,6 @@ Usage
 ------
 
 ```bash
-Usage: hipchat [-d] <email> <message>
+Usage: hipchat [-d] <email or room> <message>
 -d: debug (more verbose output)
 ```

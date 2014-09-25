@@ -4,7 +4,7 @@
 # https://github.com/robertzk/hipchat.zsh
 
 hipchat_usage() {
-  echo "Usage: hipchat [-d] <email> <message>"
+  echo "Usage: hipchat [-d] <email or room> <message>"
   echo "-d: debug (more verbose output)"
 }
 
@@ -37,7 +37,15 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     return
   fi
 
-  url="http://api.hipchat.com/v2/user/$1/message?auth_token=$HIPCHAT_API_TOKEN" 
+  if [[ $1 =~ '@' ]]; then 
+    hipchat_module='user'
+    hipchat_path='message'
+  else
+    hipchat_module='room'
+    hipchat_path='notification'
+  fi
+
+  url="http://api.hipchat.com/v2/$hipchat_module/$1/$hipchat_path?auth_token=$HIPCHAT_API_TOKEN" 
   message="{\"message\": \"${@:2}\", \"message_format\": \"text\" }"
   
   if $DEBUG; then
