@@ -2,7 +2,7 @@ hipchat.zsh
 =========
 
 A zsh plugin to send messages over Hipchat to your friends through shell. You should have `curl`
-installed and set the environment variable `HIPCHAT_API_TOKEN`.
+installed and set the environment variable [`HIPCHAT_API_TOKEN`](https://avantcredit.hipchat.com/account/api).
 
 Then you can send quick pings from the command line!
 
