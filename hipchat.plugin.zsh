@@ -3,7 +3,7 @@
 # Dependencies: curl
 # https://github.com/robertzk/hipchat.zsh
 
-urlencode() { # http://stackoverflow.com/a/10797966/2540303
+__hipchat_urlencode() { # http://stackoverflow.com/a/10797966/2540303
   local data
   if [[ $# != 1 ]]; then
       echo "Usage: $0 string-to-urlencode"
@@ -75,7 +75,7 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     fi
 
     local url="http://api.hipchat.com/v1/rooms/message?format=json&auth_token=$token&message_format=text"
-    local message="message=`urlencode "${@:2}"`&room_id=`urlencode "$1"`&from=`urlencode "$from"`"
+    local message="message=`__hipchat_urlencode "${@:2}"`&room_id=`__hipchat_urlencode "$1"`&from=`__hipchat_urlencode "$from"`"
     if $DEBUG; then
       echo "URL=$url"
       echo "MESSAGE=$message"
