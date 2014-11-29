@@ -1,5 +1,5 @@
 hipchat.zsh
-=========
+===========
 
 A zsh plugin to send messages over Hipchat to your friends through shell. You should have `curl`
 installed and set the environment variable [`HIPCHAT_API_TOKEN`](https://avantcredit.hipchat.com/account/api).
@@ -16,18 +16,26 @@ parameters that are sent to the [Hipchat API](https://www.hipchat.com/docs/apiv2
 *Note*: If no `@` character is detected in the first argument, it will assume
 you would like to [send to a room](https://www.hipchat.com/docs/apiv2/method/send_room_notification) instead.
 
-Installation
---------
+# Installation
+
+## antigen users
+
+If you're using [Antigen](https://github.com/zsh-lovers/antigen), add `antigen bundle robertzk/hipchat.zsh` to your `.zshrc` where you're loading your other modules. If you want to test it before adding it to your .zshrc, just run `antigen bundle robertzk/hipchat.zsh` in a running zsh session.
+
+## oh-my-zsh users
 
 Assuming you have [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh), you can
-simply write
+simply run:
 
 ```bash
 git clone git@github.com:robertzk/hipchat.zsh.git ~/.oh-my-zsh/custom/plugins/hipchat
 echo "plugins+=(hipchat)" >> ~/.zshrc
 ```
+in a zsh session.
 
 (Alternatively, you can place the `hipchat` plugin in the `plugins=(...)` local in your `~/.zshrc` manually.)
+
+## bash users
 
 If you use the non-recommended alternative, bash, you can install this directly to your `~/.bash_profile`:
 
@@ -36,7 +44,7 @@ curl -s https://raw.githubusercontent.com/robertzk/hipchat.zsh/master/hipchat.pl
 ```
 
 Usage
-------
+-----
 
 ```bash
 Usage: hipchat [-d] <email or room> <message>
