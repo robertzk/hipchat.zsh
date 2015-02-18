@@ -35,6 +35,10 @@ in a zsh session.
 
 (Alternatively, you can place the `hipchat` plugin in the `plugins=(...)` local in your `~/.zshrc` manually.)
 
+## zgen users
+
+If you're using [zgen](https://github.com/tarjoilija/zgen), add `zgen load robertzk/hipchat.zsh` to your `.zshrc` where you're loading your other modules.
+
 ## bash users
 
 If you use the non-recommended alternative, bash, you can install this directly to your `~/.bash_profile`:
