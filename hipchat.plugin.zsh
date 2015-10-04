@@ -34,16 +34,20 @@ hipchat() { # Arg 1: Username to send, rest: message to send
   # Ensure curl is present
   command -v curl >/dev/null 2>&1 || { echo "Please install curl." >&2; exit 1; }
 
+  local OPTIND opt d # http://stackoverflow.com/questions/16654607/using-getopts-inside-a-bash-function
   local DEBUG=false
-  while getopts "d:" OPTION
-  do
-    case $OPTION in
+  while getopts ":d" opt; do 
+    case "${opt}" in
       d)
         local DEBUG=true
-        shift 1
+        ;;
+      \?)
+        hipchat_usage
+        return
         ;;
     esac
   done
+  shift $((OPTIND-1))
   
   if [[ $# -lt 2 ]]; then
     echo "Please provide at least two arguments: who to send to and the message." >&2
@@ -75,10 +79,36 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     fi
 
     local url="http://api.hipchat.com/v1/rooms/message?format=json&auth_token=$token&message_format=text"
-    local message="message=`__hipchat_urlencode "${@:2}"`&room_id=`__hipchat_urlencode "$1"`&from=`__hipchat_urlencode "$from"`"
+
+    local msg="$(__hipchat_urlencode "${@:2}")"
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to URL encode hipchat message"
+      return 1
+    fi
+
+    local room="$(__hipchat_urlencode "$1")"
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to URL encode hipchat room"
+      return 1
+    fi
+
+    local fromenc="$(__hipchat_urlencode "$from")"
+    if [[ $? -ne 0 ]]; then
+      echo "Error: Failed to URL encode hipchat sender"
+      return 1
+    fi
+
+    local message="message=$msg&room_id=$room&from=$fromenc"
+
     if $DEBUG; then
+      echo "Using:"
+      echo ""
       echo "URL=$url"
       echo "MESSAGE=$message"
+      echo ""
+      echo "Executing: "
+      echo ""
+      echo "curl --request POST $url --data $message"
     fi
     curl --request POST $url --data $message
   fi
