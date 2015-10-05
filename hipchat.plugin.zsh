@@ -19,20 +19,20 @@ __hipchat_urlencode() { # http://stackoverflow.com/a/10797966/2540303
 }
 
 __hipchat_send_message_v2() {
-  local hipchat_module=$1
-  local hipchat_path='message'
-  local url="http://api.hipchat.com/v2/$hipchat_module/$2/$hipchat_path?auth_token=$HIPCHAT_API_TOKEN"
+  local endpoint=$1
+  local recipient=$2
+
+  local url="http://api.hipchat.com/v2/$endpoint/$recipient/message?auth_token=$HIPCHAT_API_TOKEN"
   local message="{\"message\": \"$3\", \"message_format\": \"text\" }"
 
   if $DEBUG; then
     echo "URL=$url"
     echo "MESSAGE=$message"
-    echo ""
   fi
 
   curl -H "Content-Type: application/json" --request POST $url --data "$message"
 
-  if [[ $hipchat_module = "room" ]]; then
+  if [[ $endpoint = "room" ]]; then
     echo ""
   fi
 }
@@ -87,9 +87,10 @@ hipchat() { # Arg 1: Username to send, rest: message to send
   fi
 
   if [[ $1 =~ '@' ]]; then
-    __hipchat_send_message_v2 'user' $1 "${@:2}"
+    __hipchat_send_message_v2 'user' "$1" "${@:2}"
   elif $USEV2; then
-    __hipchat_send_message_v2 'room' $1 "${@:2}"
+    local room="$(__hipchat_urlencode "$1")"
+    __hipchat_send_message_v2 'room' $room "${@:2}"
   else
     local from=$HIPCHAT_FROM
     if [[ -z $from ]]; then
