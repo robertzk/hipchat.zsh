@@ -67,7 +67,7 @@ hipchat() { # Arg 1: Username to send, rest: message to send
       echo "URL=$url"
       echo "MESSAGE=$message"
     fi
-    curl -H "Content-Type: application/json" --request POST $url --data $message
+    curl -H "Content-Type: application/json" --request POST $url --data "$message"
   else
     local from=$HIPCHAT_FROM
     if [[ -z $from ]]; then
