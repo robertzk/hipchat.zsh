@@ -18,9 +18,29 @@ __hipchat_urlencode() { # http://stackoverflow.com/a/10797966/2540303
   return 0
 }
 
+__hipchat_send_message_v2() {
+  local endpoint=$1
+  local recipient=$2
+
+  local url="http://api.hipchat.com/v2/$endpoint/$recipient/message?auth_token=$HIPCHAT_API_TOKEN"
+  local message="{\"message\": \"$3\", \"message_format\": \"text\" }"
+
+  if $DEBUG; then
+    echo "URL=$url"
+    echo "MESSAGE=$message"
+  fi
+
+  curl -H "Content-Type: application/json" --request POST $url --data "$message"
+
+  if [[ $endpoint = "room" ]]; then
+    echo ""
+  fi
+}
+
 hipchat_usage() {
-  echo "Usage: hipchat [-d] <email or room> <message>"
+  echo "Usage: hipchat [-d] [-o] <email or room> <message>"
   echo "-d: debug (more verbose output)"
+  echo "-o: old (use the v1 api when possible)"
 }
 
 hipchat() { # Arg 1: Username to send, rest: message to send
@@ -34,12 +54,22 @@ hipchat() { # Arg 1: Username to send, rest: message to send
   # Ensure curl is present
   command -v curl >/dev/null 2>&1 || { echo "Please install curl." >&2; exit 1; }
 
-  local OPTIND opt d # http://stackoverflow.com/questions/16654607/using-getopts-inside-a-bash-function
+  # show debug info
+  local OPTIND opt d
   local DEBUG=false
-  while getopts ":d" opt; do 
+
+  # use old api
+  local OPTIND opt o
+  local USEV2=true
+
+  # http://stackoverflow.com/questions/16654607/using-getopts-inside-a-bash-function
+  while getopts ":do" opt; do
     case "${opt}" in
       d)
         local DEBUG=true
+        ;;
+      o)
+        local USEV2=false
         ;;
       \?)
         hipchat_usage
@@ -48,7 +78,7 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     esac
   done
   shift $((OPTIND-1))
-  
+
   if [[ $# -lt 2 ]]; then
     echo "Please provide at least two arguments: who to send to and the message." >&2
     echo ""
@@ -56,18 +86,11 @@ hipchat() { # Arg 1: Username to send, rest: message to send
     return
   fi
 
-  if [[ $1 =~ '@' ]]; then 
-    local hipchat_module='user'
-    local hipchat_path='message'
-
-    local url="http://api.hipchat.com/v2/$hipchat_module/$1/$hipchat_path?auth_token=$HIPCHAT_API_TOKEN" 
-    local message="{\"message\": \"${@:2}\", \"message_format\": \"text\" }"
-    
-    if $DEBUG; then
-      echo "URL=$url"
-      echo "MESSAGE=$message"
-    fi
-    curl -H "Content-Type: application/json" --request POST $url --data "$message"
+  if [[ $1 =~ '@' ]]; then
+    __hipchat_send_message_v2 'user' "$1" "${@:2}"
+  elif $USEV2; then
+    local room="$(__hipchat_urlencode "$1")"
+    __hipchat_send_message_v2 'room' $room "${@:2}"
   else
     local from=$HIPCHAT_FROM
     if [[ -z $from ]]; then
